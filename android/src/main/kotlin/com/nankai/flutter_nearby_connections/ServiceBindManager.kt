@@ -10,13 +10,14 @@ import android.util.Log
 import io.flutter.plugin.common.MethodChannel
 import java.util.concurrent.atomic.AtomicBoolean
 
+
 class ServiceBindManager(
     val context: Context,
     val channel: MethodChannel,
     val callback: CallbackUtils
 ) {
+    private val TAG = "flutter_nearby_connections-ServiceBindManager"
 
-    val TAG: String = "ServiceBindManager"
     var mService: NearbyService? = null
 
     private val isBound: AtomicBoolean = AtomicBoolean(false)

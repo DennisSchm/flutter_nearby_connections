@@ -12,7 +12,7 @@ const val connected = 2
 const val notConnected = 3
 
 class CallbackUtils constructor(private val channel: MethodChannel, private val activity: Activity) {
-
+    private val TAG = "flutter_nearby_connections-CallbackUtils"
     private val devices = mutableListOf<DeviceJson>()
     private val gson = Gson()
     private fun deviceExists(deviceId: String) = devices.any { element -> element.deviceID == deviceId }
@@ -42,7 +42,7 @@ class CallbackUtils constructor(private val channel: MethodChannel, private val 
     val endpointDiscoveryCallback: EndpointDiscoveryCallback = object : EndpointDiscoveryCallback() {
         override fun onEndpointFound(endpointId: String,
                                      discoveredEndpointInfo: DiscoveredEndpointInfo) {
-            Log.d("nearby_connections", "onEndpointFound $discoveredEndpointInfo")
+            Log.d(TAG, "onEndpointFound $discoveredEndpointInfo")
             if(!deviceExists(endpointId)) {
                 val data = DeviceJson(endpointId, discoveredEndpointInfo.endpointName, notConnected)
                 addDevice(data)
@@ -50,7 +50,7 @@ class CallbackUtils constructor(private val channel: MethodChannel, private val 
         }
 
         override fun onEndpointLost(endpointId: String) {
-            Log.d("nearby_connections", "onEndpointLost $endpointId")
+            Log.d(TAG, "onEndpointLost $endpointId")
             if (deviceExists(endpointId)) {
                 Nearby.getConnectionsClient(activity).disconnectFromEndpoint(endpointId)
             }
@@ -60,7 +60,7 @@ class CallbackUtils constructor(private val channel: MethodChannel, private val 
 
     private val payloadCallback: PayloadCallback = object : PayloadCallback() {
         override fun onPayloadReceived(endpointId: String, payload: Payload) {
-            Log.d("nearby_connections", "onPayloadReceived $endpointId")
+            Log.d(TAG, "onPayloadReceived $endpointId")
             val args = mutableMapOf("deviceId" to endpointId, "message" to String(payload.asBytes()!!))
             channel.invokeMethod(INVOKE_MESSAGE_RECEIVE_METHOD, args)
         }
@@ -68,20 +68,20 @@ class CallbackUtils constructor(private val channel: MethodChannel, private val 
         override fun onPayloadTransferUpdate(endpointId: String,
                                              payloadTransferUpdate: PayloadTransferUpdate) {
             // required for files and streams
-            Log.d("nearby_connections", "onPayloadTransferUpdate $endpointId")
+            Log.d(TAG, "onPayloadTransferUpdate $endpointId")
         }
     }
 
     val connectionLifecycleCallback: ConnectionLifecycleCallback = object : ConnectionLifecycleCallback() {
         override fun onConnectionInitiated(endpointId: String, connectionInfo: ConnectionInfo) {
-            Log.d("nearby_connections", "onConnectionInitiated $connectionInfo")
+            Log.d(TAG, "onConnectionInitiated $connectionInfo")
             val data = DeviceJson(endpointId, connectionInfo.endpointName, connecting)
             addDevice(data)
             Nearby.getConnectionsClient(activity).acceptConnection(endpointId, payloadCallback)
         }
 
         override fun onConnectionResult(endpointId: String, result: ConnectionResolution) {
-            Log.d("nearby_connections", "onConnectionResult $endpointId")
+            Log.d(TAG, "onConnectionResult $endpointId")
             val data = if (result.status.isSuccess) {
              DeviceJson(endpointId,
                         if (device(endpointId)?.deviceName == null) "Null" else device(endpointId)?.deviceName!!,connected)
@@ -93,7 +93,7 @@ class CallbackUtils constructor(private val channel: MethodChannel, private val 
         }
 
         override fun onDisconnected(endpointId: String) {
-            Log.d("nearby_connections", "onDisconnected $endpointId")
+            Log.d(TAG, "onDisconnected $endpointId")
             if (deviceExists(endpointId)) {
                 updateStatus(endpointId, notConnected)
             } else {

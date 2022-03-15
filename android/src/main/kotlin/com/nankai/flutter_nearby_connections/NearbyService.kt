@@ -5,7 +5,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
 import android.content.BroadcastReceiver
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.media.session.PlaybackState.ACTION_STOP
@@ -22,6 +21,7 @@ const val NOTIFICATION_ID = 101
 const val CHANNEL_ID = "channel"
 
 class NearbyService : Service() {
+    private val TAG = "flutter_nearby_connections-NearbyService"
     private val binder: IBinder = LocalBinder(this)
     private lateinit var callbackUtils: CallbackUtils
     private lateinit var connectionsClient: ConnectionsClient
