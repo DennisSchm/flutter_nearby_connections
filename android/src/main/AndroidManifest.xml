@@ -22,8 +22,10 @@
     <application>
         <service
             android:name=".NearbyService"
+            android:foregroundServiceType="location"
             android:enabled="true"
-            android:exported="false"/>
+            android:exported="false"
+            />
 
 
     </application>
