@@ -141,6 +141,7 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
                           child: Column(
                             children: [
                               Text(device.deviceName),
+                              if (device.token != null) Text(device.token!),
                               Text(
                                 getStateName(device.state),
                                 style: TextStyle(

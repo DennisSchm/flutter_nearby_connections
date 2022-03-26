@@ -20,11 +20,14 @@ class Device {
   /// Peer name
   String deviceName;
 
+  /// Connection Token
+  String? token;
+
   /// Provide peer state
   /// See [SessionState]
   SessionState state = SessionState.notConnected;
 
-  Device(this.deviceId, this.deviceName, int state) {
+  Device(this.deviceId, this.deviceName, int state, this.token) {
     switch (state) {
       case 1:
         this.state = SessionState.connecting;
@@ -39,6 +42,6 @@ class Device {
   }
 
   factory Device.fromJson(json) {
-    return Device(json["deviceId"], json["deviceName"], json["state"]);
+    return Device(json["deviceId"], json["deviceName"], json["state"], json["token"]);
   }
 }

@@ -4,4 +4,5 @@ import com.google.gson.annotations.SerializedName
 
 data class DeviceJson(@SerializedName("deviceId") var deviceID: String,
                       @SerializedName("deviceName") var deviceName: String,
-                      @SerializedName("state") var state: Int)
+                      @SerializedName("state") var state: Int,
+                      @SerializedName("token") var token: String?)
