@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:device_info/device_info.dart';
-import 'package:flutter_styled_toast/flutter_styled_toast.dart';
+
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_nearby_connections/flutter_nearby_connections.dart';
+import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 
 void main() {
   runApp(MyApp());
@@ -286,11 +287,11 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     if (Platform.isAndroid) {
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-      devInfo = androidInfo.model;
+      devInfo = androidInfo.model!;
     }
     if (Platform.isIOS) {
       IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-      devInfo = iosInfo.localizedModel;
+      devInfo = iosInfo.localizedModel!;
     }
     await nearbyService.init(
         serviceType: 'mpconn',
@@ -299,7 +300,6 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
         callback: (isRunning) async {
           if (isRunning) {
             if (widget.deviceType == DeviceType.browser) {
-
               await nearbyService.stopBrowsingForPeers();
               await Future.delayed(Duration(microseconds: 200));
               await nearbyService.startBrowsingForPeers();
