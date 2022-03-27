@@ -43,7 +43,7 @@ const val NEARBY_RUNNING = "nearby_running"
 
 /** FlutterNearbyConnectionsPlugin */
 class FlutterNearbyConnectionsPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
-    private val TAG = "flutter_nearby_connections-FlutterNearbyConnectionsPlugin"
+    private val TAG = "FNC-FNCPlugin"
     private lateinit var channel: MethodChannel
     private var locationHelper: LocationHelper? = null
     private lateinit var activity: Activity

@@ -21,7 +21,7 @@ const val NOTIFICATION_ID = 101
 const val CHANNEL_ID = "channel"
 
 class NearbyService : Service() {
-    private val TAG = "flutter_nearby_connections-NearbyService"
+    private val TAG = "FNC-NearbyService"
     private val binder: IBinder = LocalBinder(this)
     private lateinit var callbackUtils: CallbackUtils
     private lateinit var connectionsClient: ConnectionsClient

@@ -16,7 +16,7 @@ class CallbackUtils constructor(
     private val channel: MethodChannel,
     private val activity: Activity
 ) {
-    private val TAG = "FNC_CallbackUtils"
+    private val TAG = "FNC-CallbackUtils"
     private val devices = mutableListOf<DeviceJson>()
     private val gson = Gson()
 
