@@ -44,7 +44,7 @@ class NearbyService : Service() {
         this@NearbyService.callbackUtils = callbackUtils
     }
 
-    override fun onBind(intent: Intent?): IBinder? {
+    override fun onBind(intent: Intent?): IBinder {
         return binder
     }
 
@@ -100,7 +100,7 @@ class NearbyService : Service() {
         connectionsClient.stopAllEndpoints()
     }
 
-    private fun getNotification(): Notification? {
+    private fun getNotification(): Notification {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val serviceChannel = NotificationChannel(
                 CHANNEL_ID, "Foreground Service Channel",
