@@ -22,8 +22,6 @@ import java.lang.Exception
 import kotlin.system.exitProcess
 
 
-const val SERVICE_ID = "flutter_nearby_connections"
-
 const val initNearbyService = "init_nearby_service"
 const val startAdvertisingPeer = "start_advertising_peer"
 const val startBrowsingForPeers = "start_browsing_for_peers"

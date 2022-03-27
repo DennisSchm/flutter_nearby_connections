@@ -25,12 +25,14 @@ class NearbyService : Service() {
     private val binder: IBinder = LocalBinder(this)
     private lateinit var callbackUtils: CallbackUtils
     private lateinit var connectionsClient: ConnectionsClient
+    private lateinit var serviceID: String
 
     override fun onCreate() {
         super.onCreate()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForeground(NOTIFICATION_ID, getNotification())
         }
+        serviceID = packageName.substringAfterLast('.')
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -54,7 +56,7 @@ class NearbyService : Service() {
     fun startAdvertising(strategy: Strategy, deviceName: String) {
         Log.d(TAG, "startAdvertising()")
         connectionsClient.startAdvertising(
-            deviceName, SERVICE_ID, callbackUtils.connectionLifecycleCallback,
+            deviceName, serviceID, callbackUtils.connectionLifecycleCallback,
             AdvertisingOptions.Builder().setStrategy(strategy).build()
         )
     }
@@ -62,7 +64,7 @@ class NearbyService : Service() {
     fun startDiscovery(strategy: Strategy) {
         Log.d(TAG, "startDiscovery()")
         connectionsClient.startDiscovery(
-            SERVICE_ID, callbackUtils.endpointDiscoveryCallback,
+            serviceID, callbackUtils.endpointDiscoveryCallback,
             DiscoveryOptions.Builder().setStrategy(strategy).build()
         )
     }
