@@ -27,7 +27,11 @@ class CallbackUtils constructor(
         devices.find { element -> element.deviceID == deviceId }
 
     fun updateStatus(deviceId: String, state: Int) {
-        device(deviceId)?.state = state
+        val device = device(deviceId)
+        device?.state = state
+        if (state == notConnected) {
+            device?.token = null
+        }
     }
 
     fun addDevice(device: DeviceJson) {
@@ -140,7 +144,6 @@ class CallbackUtils constructor(
                 if (deviceExists(endpointId)) {
                     updateStatus(endpointId, notConnected)
                     invokeChangeState()
-                    device(endpointId)?.token = null
                 } else {
                     val data = DeviceJson(
                         endpointId,

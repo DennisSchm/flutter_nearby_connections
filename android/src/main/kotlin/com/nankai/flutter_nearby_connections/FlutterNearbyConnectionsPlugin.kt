@@ -109,7 +109,7 @@ class FlutterNearbyConnectionsPlugin : FlutterPlugin, MethodCallHandler, Activit
                 result.success(true)
             }
             stopBrowsingForPeers -> {
-                Log.d(TAG, "stopDiscovery")
+                Log.d(TAG, "stopBrowsingForPeers")
                 serviceBindManager.mService?.stopDiscovery()
                 serviceBindManager.unbindService()
                 result.success(true)
@@ -125,6 +125,7 @@ class FlutterNearbyConnectionsPlugin : FlutterPlugin, MethodCallHandler, Activit
                 val deviceId = call.argument<String>("deviceId")
                 serviceBindManager.mService?.disconnect(deviceId!!)
                 callbackUtils.updateStatus(deviceId = deviceId!!, state = notConnected)
+                callbackUtils.invokeChangeState()
                 result.success(true)
             }
             sendMessage -> {
