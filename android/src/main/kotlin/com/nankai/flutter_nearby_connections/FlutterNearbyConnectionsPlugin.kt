@@ -55,7 +55,7 @@ class FlutterNearbyConnectionsPlugin : FlutterPlugin, MethodCallHandler, Activit
     private var isBind = false
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-        channel = MethodChannel(flutterPluginBinding.flutterEngine.dartExecutor, viewTypeId)
+        channel = MethodChannel(flutterPluginBinding.binaryMessenger, viewTypeId)
         channel.setMethodCallHandler(this)
     }
 
