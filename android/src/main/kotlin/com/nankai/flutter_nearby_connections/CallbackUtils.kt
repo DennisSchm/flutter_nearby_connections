@@ -111,8 +111,8 @@ class CallbackUtils constructor(
                     connectionInfo.endpointName,
                     connecting,
                     Base64.encodeToString(
-                        connectionInfo.getRawAuthenticationToken(),
-                        Base64.DEFAULT
+                        connectionInfo.rawAuthenticationToken,
+                        Base64.NO_WRAP
                     )
                 )
                 addDevice(data)
