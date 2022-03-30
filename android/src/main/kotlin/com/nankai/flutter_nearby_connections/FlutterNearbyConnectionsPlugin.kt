@@ -46,12 +46,12 @@ class FlutterNearbyConnectionsPlugin : FlutterPlugin, MethodCallHandler, Activit
     private var locationHelper: LocationHelper? = null
     private lateinit var activity: Activity
     private var binding: ActivityPluginBinding? = null
-    private lateinit var callbackUtils: CallbackUtils
+    private var callbackUtils: CallbackUtils? = null
 
-    private lateinit var localDeviceName: String
-    private lateinit var strategy: Strategy
-    private lateinit var connectionsClient: ConnectionsClient
-    private lateinit var serviceBindManager: ServiceBindManager
+    private var localDeviceName: String? = null
+    private var strategy: Strategy? = null
+    private var connectionsClient: ConnectionsClient? = null
+    private var serviceBindManager: ServiceBindManager? = null
     private var isBind = false
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
@@ -75,8 +75,8 @@ class FlutterNearbyConnectionsPlugin : FlutterPlugin, MethodCallHandler, Activit
                 Log.d(TAG, "initNearbyService")
                 callbackUtils = CallbackUtils(channel, activity)
                 connectionsClient = Nearby.getConnectionsClient(activity)
-                serviceBindManager = ServiceBindManager(activity, channel, callbackUtils)
-                serviceBindManager.bindService()
+                serviceBindManager = ServiceBindManager(activity, channel, callbackUtils!!)
+                serviceBindManager!!.bindService()
 
                 localDeviceName = if (call.argument<String>("deviceName").isNullOrEmpty())
                     Build.MANUFACTURER + " " + Build.MODEL
@@ -94,52 +94,56 @@ class FlutterNearbyConnectionsPlugin : FlutterPlugin, MethodCallHandler, Activit
             }
             startAdvertisingPeer -> {
                 Log.d(TAG, "startAdvertisingPeer")
-                serviceBindManager.mService?.startAdvertising(strategy, localDeviceName)
+                serviceBindManager!!.mService?.startAdvertising(strategy!!, localDeviceName!!)
+                result.success(true)
             }
             startBrowsingForPeers -> {
                 Log.d(TAG, "startBrowsingForPeers")
-                serviceBindManager.mService?.startDiscovery(strategy)
+                serviceBindManager!!.mService?.startDiscovery(strategy!!)
+                result.success(true)
             }
             stopAdvertisingPeer -> {
                 Log.d(TAG, "stopAdvertisingPeer")
-                serviceBindManager.mService?.stopAdvertising()
-                serviceBindManager.unbindService()
+                serviceBindManager!!.mService?.stopAdvertising()
+                serviceBindManager!!.unbindService()
                 result.success(true)
             }
             stopBrowsingForPeers -> {
                 Log.d(TAG, "stopBrowsingForPeers")
-                serviceBindManager.mService?.stopDiscovery()
-                serviceBindManager.unbindService()
+                serviceBindManager!!.mService?.stopDiscovery()
+                serviceBindManager!!.unbindService()
                 result.success(true)
             }
             invitePeer -> {
                 Log.d(TAG, "invitePeer")
                 val deviceId = call.argument<String>("deviceId")
                 val displayName = call.argument<String>("deviceName")
-                serviceBindManager.mService?.connect(deviceId!!, displayName!!)
+                serviceBindManager!!.mService?.connect(deviceId!!, displayName!!)
+                result.success(true)
             }
             disconnectPeer -> {
                 Log.d(TAG, "disconnectPeer")
                 val deviceId = call.argument<String>("deviceId")
-                serviceBindManager.mService?.disconnect(deviceId!!)
-                callbackUtils.updateStatus(deviceId = deviceId!!, state = notConnected)
-                callbackUtils.invokeChangeState()
+                serviceBindManager!!.mService?.disconnect(deviceId!!)
+                callbackUtils!!.updateStatus(deviceId = deviceId!!, state = notConnected)
+                callbackUtils!!.invokeChangeState()
                 result.success(true)
             }
             sendMessage -> {
                 Log.d(TAG, "sendMessage")
                 val deviceId = call.argument<String>("deviceId")
                 val message = call.argument<String>("message")
-                serviceBindManager.mService?.sendStringPayload(deviceId!!, message!!)
+                serviceBindManager!!.mService?.sendStringPayload(deviceId!!, message!!)
+                result.success(true)
             }
         }
     }
 
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
         channel.setMethodCallHandler(null)
-        serviceBindManager.mService?.stopAdvertising()
-        serviceBindManager.mService?.stopDiscovery()
-        serviceBindManager.unbindService()
+        serviceBindManager?.mService?.stopAdvertising()
+        serviceBindManager?.mService?.stopDiscovery()
+        serviceBindManager?.unbindService()
         locationHelper = null
         exitProcess(0)
     }
