@@ -87,7 +87,7 @@ class CallbackUtils constructor(
 
     private val payloadCallback: PayloadCallback = object : PayloadCallback() {
         override fun onPayloadReceived(endpointId: String, payload: Payload) {
-            Log.d(TAG, "onPayloadReceived $endpointId")
+            Log.d(TAG, "onPayloadReceived from $endpointId")
             val args =
                 mutableMapOf("deviceId" to endpointId, "message" to String(payload.asBytes()!!))
             channel.invokeMethod(INVOKE_MESSAGE_RECEIVE_METHOD, args)
@@ -98,7 +98,8 @@ class CallbackUtils constructor(
             payloadTransferUpdate: PayloadTransferUpdate
         ) {
             // required for files and streams
-            Log.d(TAG, "onPayloadTransferUpdate $endpointId")
+            Log.d(TAG, "onPayloadTransferUpdate $endpointId ${payloadTransferUpdate.status}")
+            // TODO: Add callback for Transfer Updates
         }
     }
 

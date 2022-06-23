@@ -46,7 +46,9 @@ class NearbyService {
   /// 	</array>
   ///
   /// param [deviceId] is unique, you should use the UDID for [deviceId]
-  /// param [strategy] Nearby Connections supports different Strategies for advertising and discovery. The best Strategy to use depends on the use case. only support android OS
+  /// param [strategy] Nearby Connections supports different Strategies for 
+  ///                  advertising and discovery. The best Strategy to use 
+  ///                  depends on the use case. only support android OS
   Future init(
       {required String serviceType,
       required Strategy strategy,
@@ -97,7 +99,7 @@ class NearbyService {
       _initNearbyService,
       <String, dynamic>{
         'deviceName': deviceName ?? "",
-        'serviceType': serviceType,
+        'serviceType': serviceType,// TODO serviceType not used
         'strategy': strategyValue,
       },
     );

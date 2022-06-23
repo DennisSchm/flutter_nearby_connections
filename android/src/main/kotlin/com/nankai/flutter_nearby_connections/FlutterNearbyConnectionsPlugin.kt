@@ -55,6 +55,7 @@ class FlutterNearbyConnectionsPlugin : FlutterPlugin, MethodCallHandler, Activit
     private var isBind = false
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+        Log.d(TAG, "onAttachedToEngine")
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, viewTypeId)
         channel.setMethodCallHandler(this)
     }
@@ -140,6 +141,7 @@ class FlutterNearbyConnectionsPlugin : FlutterPlugin, MethodCallHandler, Activit
     }
 
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
+        Log.d(TAG, "onDetachedFromEngine")
         channel.setMethodCallHandler(null)
         serviceBindManager?.mService?.stopAdvertising()
         serviceBindManager?.mService?.stopDiscovery()
@@ -149,6 +151,7 @@ class FlutterNearbyConnectionsPlugin : FlutterPlugin, MethodCallHandler, Activit
     }
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
+        Log.d(TAG, "onAttachedToActivity")
         this.binding = binding
         activity = binding.activity
         locationHelper = LocationHelper(binding.activity)
@@ -159,9 +162,11 @@ class FlutterNearbyConnectionsPlugin : FlutterPlugin, MethodCallHandler, Activit
     }
 
     override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
+        Log.d(TAG, "onReattachedToActivityForConfigChanges")
     }
 
     override fun onDetachedFromActivity() {
+        Log.d(TAG, "onDetachedFromActivity")
         locationHelper?.let {
             binding?.removeRequestPermissionsResultListener(it)
             binding?.removeActivityResultListener(it)
@@ -170,5 +175,6 @@ class FlutterNearbyConnectionsPlugin : FlutterPlugin, MethodCallHandler, Activit
     }
 
     override fun onDetachedFromActivityForConfigChanges() {
+        Log.d(TAG, "onDetachedFromActivityForConfigChanges")
     }
 }
