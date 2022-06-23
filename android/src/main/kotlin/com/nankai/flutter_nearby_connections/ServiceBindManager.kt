@@ -16,7 +16,7 @@ class ServiceBindManager(
     val channel: MethodChannel,
     val callback: CallbackUtils
 ) {
-    private val TAG = "flutter_nearby_connections-ServiceBindManager"
+    private val TAG = "FNC-ServiceBindManager"
 
     var mService: NearbyService? = null
 

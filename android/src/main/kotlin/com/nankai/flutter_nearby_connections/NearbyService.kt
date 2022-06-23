@@ -21,16 +21,19 @@ const val NOTIFICATION_ID = 101
 const val CHANNEL_ID = "channel"
 
 class NearbyService : Service() {
-    private val TAG = "flutter_nearby_connections-NearbyService"
+    private val TAG = "FNC-NearbyService"
     private val binder: IBinder = LocalBinder(this)
     private lateinit var callbackUtils: CallbackUtils
-    private lateinit var connectionsClient: ConnectionsClient
+    private var connectionsClient: ConnectionsClient? = null
+    private lateinit var serviceID: String
 
     override fun onCreate() {
+        Log.d(TAG, "onCreate")
         super.onCreate()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForeground(NOTIFICATION_ID, getNotification())
         }
+        serviceID = packageName.substringAfterLast('.')
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -38,53 +41,54 @@ class NearbyService : Service() {
     }
 
     fun initService(callbackUtils: CallbackUtils) {
+        Log.d(TAG, "initService")
         connectionsClient = Nearby.getConnectionsClient(this)
         this@NearbyService.callbackUtils = callbackUtils
     }
 
-    override fun onBind(intent: Intent?): IBinder? {
+    override fun onBind(intent: Intent?): IBinder {
         return binder
     }
 
     fun sendStringPayload(endpointId: String, str: String) {
-        Log.d(TAG, "sendStringPayload $endpointId -> $str")
-        connectionsClient.sendPayload(endpointId, Payload.fromBytes(str.toByteArray()))
+        Log.d(TAG, "sendStringPayload ${str.length} ${str.toByteArray().size} $str -> $endpointId")
+        connectionsClient!!.sendPayload(endpointId, Payload.fromBytes(str.toByteArray()))
     }
 
     fun startAdvertising(strategy: Strategy, deviceName: String) {
-        Log.d(TAG, "startAdvertising()")
-        connectionsClient.startAdvertising(
-            deviceName, SERVICE_ID, callbackUtils.connectionLifecycleCallback,
+        Log.d(TAG, "startAdvertising(); serviceID: $serviceID")
+        connectionsClient!!.startAdvertising(
+            deviceName, serviceID, callbackUtils.connectionLifecycleCallback,
             AdvertisingOptions.Builder().setStrategy(strategy).build()
         )
     }
 
     fun startDiscovery(strategy: Strategy) {
-        Log.d(TAG, "startDiscovery()")
-        connectionsClient.startDiscovery(
-            SERVICE_ID, callbackUtils.endpointDiscoveryCallback,
+        Log.d(TAG, "startDiscovery(); serviceID: $serviceID")
+        connectionsClient!!.startDiscovery(
+            serviceID, callbackUtils.endpointDiscoveryCallback,
             DiscoveryOptions.Builder().setStrategy(strategy).build()
         )
     }
 
     fun stopDiscovery() {
         Log.d(TAG, "stopDiscovery()")
-        connectionsClient.stopDiscovery()
+        connectionsClient?.stopDiscovery()
     }
 
     fun stopAdvertising() {
         Log.d(TAG, "stopAdvertising()")
-        connectionsClient.stopAdvertising()
+        connectionsClient?.stopAdvertising()
     }
 
     fun disconnect(endpointId: String) {
         Log.d(TAG, "disconnect $endpointId")
-        connectionsClient.disconnectFromEndpoint(endpointId)
+        connectionsClient!!.disconnectFromEndpoint(endpointId)
     }
 
     fun connect(endpointId: String, displayName: String) {
         Log.d(TAG, "connect $endpointId | $displayName")
-        connectionsClient.requestConnection(
+        connectionsClient!!.requestConnection(
             displayName,
             endpointId,
             callbackUtils.connectionLifecycleCallback
@@ -92,13 +96,14 @@ class NearbyService : Service() {
     }
 
     override fun onDestroy() {
+        Log.d(TAG, "onDestroy")
         super.onDestroy()
         stopAdvertising()
         stopDiscovery()
-        connectionsClient.stopAllEndpoints()
+        connectionsClient?.stopAllEndpoints() 
     }
 
-    private fun getNotification(): Notification? {
+    private fun getNotification(): Notification {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val serviceChannel = NotificationChannel(
                 CHANNEL_ID, "Foreground Service Channel",

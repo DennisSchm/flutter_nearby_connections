@@ -83,7 +83,7 @@ class LocationHelper(private val activity: Activity) : PluginRegistry.ActivityRe
 
     private fun requestLocationEnable() {
         val task = LocationServices.getSettingsClient(activity)
-                .checkLocationSettings(mLocationSettingsRequest)
+                .checkLocationSettings(mLocationSettingsRequest as LocationSettingsRequest)
         task.addOnCompleteListener { t ->
             try {
                 t.getResult(ApiException::class.java)
