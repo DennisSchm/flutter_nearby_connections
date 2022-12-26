@@ -46,13 +46,14 @@ class NearbyService {
   /// 	</array>
   ///
   /// param [deviceId] is unique, you should use the UDID for [deviceId]
-  /// param [strategy] Nearby Connections supports different Strategies for 
-  ///                  advertising and discovery. The best Strategy to use 
+  /// param [strategy] Nearby Connections supports different Strategies for
+  ///                  advertising and discovery. The best Strategy to use
   ///                  depends on the use case. only support android OS
   Future init(
       {required String serviceType,
       required Strategy strategy,
       String? deviceName,
+      String? deviceId,
       required Function callback}) async {
     assert(serviceType.length <= 15 &&
         //serviceType != null &&
@@ -98,8 +99,9 @@ class NearbyService {
     _channel.invokeMethod(
       _initNearbyService,
       <String, dynamic>{
+        'deviceId': deviceId,
         'deviceName': deviceName ?? "",
-        'serviceType': serviceType,// TODO serviceType not used
+        'serviceType': serviceType, // TODO serviceType not used
         'strategy': strategyValue,
       },
     );
@@ -171,7 +173,7 @@ class NearbyService {
   /// [stateChangedSubscription] will return you a list of [Device].
   /// see [StateChangedCallback]
   StreamSubscription stateChangedSubscription(
-      {required StateChangedCallback callback}) =>
+          {required StateChangedCallback callback}) =>
       _stateChangedStream.listen(callback);
 
   /// The [dataReceivedSubscription] helps you listen when a peer sends you
@@ -179,6 +181,6 @@ class NearbyService {
   /// It returns a [StreamSubscription] so you can cancel listening at any time.
   /// see [DataReceivedCallback]
   StreamSubscription dataReceivedSubscription(
-      {required DataReceivedCallback callback}) =>
+          {required DataReceivedCallback callback}) =>
       _dataReceivedStream.listen(callback);
 }
